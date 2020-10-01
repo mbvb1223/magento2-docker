@@ -1,0 +1,5 @@
+<h1>Mbvb1223 Store</h1>
+<?php foreach($block->getStores() as $post): ?>
+    <h2><a href="<?php echo $block->getPostUrl($post);?>"><?php echo $post->getName(); ?></a></h2>
+    <p><?php echo $post->getCode(); ?></p>
+<?php endforeach; ?>

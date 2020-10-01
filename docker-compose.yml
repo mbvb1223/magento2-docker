@@ -3,17 +3,22 @@ version: '3.7'
 services:
   app:
     image: nginx:1.16.1
+    container_name: m2_app
     ports:
       - "8888:80"
     volumes:
       - ./conf/app/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./src:/var/www/html
+
   phpfpm:
+    container_name: m2_php
     build: './dockerfile/phpfpm'
     volumes:
       - ./src:/var/www/html
+
   mysql:
     image: mysql:5.7
+    container_name: m2_mysql
     volumes:
       - ./mysql:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d:ro
@@ -22,6 +27,19 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: 123456
       MYSQL_ROOT_PASSWORD: 123456
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: dev_phpmyadmin
+    links:
+      - mysql
+    environment:
+      PMA_HOST: m2_mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8183:80
 
   elasticsearch:
     image: elasticsearch:7.7.1

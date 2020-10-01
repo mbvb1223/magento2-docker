@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Mbvb1223_Store::helloworld" title="Hello World" module="Mbvb1223_Store" sortOrder="51" resource="Mbvb1223_Store::helloworld"/>
+        <add id="Mbvb1223_Store::store" title="Manage Stores" module="Mbvb1223_Store" sortOrder="10" action="store/store" resource="Mbvb1223_Store::store" parent="Mbvb1223_Store::helloworld"/>
+    </menu>
+</config>
