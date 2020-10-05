@@ -1,27 +1,33 @@
 <?php
 namespace Mbvb1223\Store\Controller\Adminhtml\Store;
 
-use Magento\Backend\App\Action;
-use Magento\Backend\Model\View\Result\Page;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
+use Mbvb1223\Store\Controller\Adminhtml\Store;
+use Mbvb1223\Store\Model\StoreFactory;
+use Magento\Framework\Registry;
 
-class Index extends Action
+class Index extends Store
 {
-    protected $resultPageFactory = false;
-
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
+        Context $context,
+        Registry $coreRegistry,
+        PageFactory $resultPageFactory,
+        StoreFactory $postsFactory
     )
     {
-        parent::__construct($context);
-        $this->resultPageFactory = $resultPageFactory;
+        parent::__construct($context, $coreRegistry, $resultPageFactory, $postsFactory);
     }
-
     public function execute()
     {
-        die('ssssssss');
-        $resultPage = $this->resultPageFactory->create();
-        $resultPage->getConfig()->getTitle()->prepend((__('Posts')));
+        if ($this->getRequest()->getQuery('ajax')) {
+            $this->_forward('grid');
+            return;
+        }
+
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->_resultPageFactory->create();
+        $resultPage->getConfig()->getTitle()->prepend(__('Manage Khien Store234234'));
 
         return $resultPage;
     }
