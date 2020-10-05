@@ -5,7 +5,7 @@
             <block class="Magento\Backend\Block\Widget\Grid" name="store_store_grid_block.grid" as="grid">
                 <arguments>
                     <argument name="id" xsi:type="string">id</argument>
-                    <argument name="dataSource" xsi:type="object">Magetop\Helloworld\Model\ResourceModel\Store\Collection</argument>
+                    <argument name="dataSource" xsi:type="object">Mbvb1223\Store\Model\ResourceModel\Store\Collection</argument>
                     <argument name="default_sort" xsi:type="string">id</argument>
                     <argument name="default_dir" xsi:type="string">ASC</argument>
                     <argument name="save_parameters_in_session" xsi:type="boolean">true</argument>
@@ -17,11 +17,29 @@
                             <item name="path" xsi:type="string">*/*/edit</item>
                         </argument>
                     </arguments>
-                    <block class="Magento\Backend\Block\Widget\Grid\Column" as="post_id">
+                    <block class="Magento\Backend\Block\Widget\Grid\Column" as="store_id">
                         <arguments>
                             <argument name="header" xsi:type="string" translate="true">ID</argument>
-                            <argument name="index" xsi:type="string">id</argument>
+                            <argument name="index" xsi:type="string">store_id</argument>
                             <argument name="type" xsi:type="string">taext</argument>
+                            <argument name="column_css_class" xsi:type="string">col-id</argument>
+                            <argument name="header_css_class" xsi:type="string">col-id</argument>
+                        </arguments>
+                    </block>
+                    <block class="Magento\Backend\Block\Widget\Grid\Column" as="name">
+                        <arguments>
+                            <argument name="header" xsi:type="string" translate="true">Name</argument>
+                            <argument name="index" xsi:type="string">name</argument>
+                            <argument name="type" xsi:type="string">text</argument>
+                            <argument name="column_css_class" xsi:type="string">col-id</argument>
+                            <argument name="header_css_class" xsi:type="string">col-id</argument>
+                        </arguments>
+                    </block>
+                    <block class="Magento\Backend\Block\Widget\Grid\Column" as="code">
+                        <arguments>
+                            <argument name="header" xsi:type="string" translate="true">Code</argument>
+                            <argument name="index" xsi:type="string">code</argument>
+                            <argument name="type" xsi:type="string">text</argument>
                             <argument name="column_css_class" xsi:type="string">col-id</argument>
                             <argument name="header_css_class" xsi:type="string">col-id</argument>
                         </arguments>
