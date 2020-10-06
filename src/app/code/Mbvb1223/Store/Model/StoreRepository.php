@@ -40,22 +40,12 @@ class StoreRepository implements StoreRepositoryInterface
 
     public function getById($id)
     {
-//        $page = $this->storeFactory->create();
-//        $page->load($id);
-//        if (!$page->getId()) {
-//            throw new NoSuchEntityException(__('The CMS page with the "%1" ID doesn\'t exist.', $id));
-//        }
-//        $this->identityMap->add($page);
-//
-//        return $page;
-
-        $block = $this->storeFactory->create();
-        $this->resource->load($block, $id);
-        if (!$block->getId()) {
+        $store = $this->storeFactory->create();
+        $this->resource->load($store, $id);
+        if (!$store->getId()) {
             throw new NoSuchEntityException(__('The CMS block with the "%1" ID doesn\'t exist.', $id));
         }
 
-        var_dump($block);die();
-        return $block;
+        return $store;
     }
 }
