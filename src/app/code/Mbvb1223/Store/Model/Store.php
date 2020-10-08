@@ -36,6 +36,11 @@ class Store extends AbstractModel implements StoreInterface, IdentityInterface
         return $this->getData(self::STORE_ID);
     }
 
+    public function getStatus()
+    {
+        return $this->getData(self::STATUS);
+    }
+
     public function getName()
     {
         return $this->getData(self::NAME);
@@ -54,6 +59,11 @@ class Store extends AbstractModel implements StoreInterface, IdentityInterface
     public function setName($name)
     {
         return $this->setData(self::NAME, $name);
+    }
+
+    public function setStatus($status)
+    {
+        return $this->setData(self::STATUS, $status);
     }
 
     public function setCode($code)

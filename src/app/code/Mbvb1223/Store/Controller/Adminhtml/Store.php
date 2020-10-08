@@ -11,7 +11,7 @@ class Store extends Action
 {
     protected $_coreRegistry;
     protected $_resultPageFactory;
-    protected $_postsFactory;
+    protected $_storeFactory;
 
     public function __construct(
         Context $context,
@@ -22,7 +22,7 @@ class Store extends Action
         parent::__construct($context);
         $this->_coreRegistry = $coreRegistry;
         $this->_resultPageFactory = $resultPageFactory;
-        $this->_postsFactory = $postsFactory;
+        $this->_storeFactory = $postsFactory;
 
     }
     public function execute()

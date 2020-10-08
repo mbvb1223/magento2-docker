@@ -9,6 +9,7 @@ interface StoreInterface
      */
     const STORE_ID = 'store_id';
     const NAME = 'name';
+    const STATUS = 'status_id';
     const CODE = 'code';
     const CREATED_AT = 'created_at';
     /**#@-*/
