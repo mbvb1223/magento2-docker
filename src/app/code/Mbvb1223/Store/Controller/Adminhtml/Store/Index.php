@@ -14,8 +14,7 @@ class Index extends Store
         Registry $coreRegistry,
         PageFactory $resultPageFactory,
         StoreFactory $postsFactory
-    )
-    {
+    ) {
         parent::__construct($context, $coreRegistry, $resultPageFactory, $postsFactory);
     }
     public function execute()
@@ -27,7 +26,7 @@ class Index extends Store
 
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->_resultPageFactory->create();
-        $resultPage->getConfig()->getTitle()->prepend(__('Manage Khien Store234234'));
+        $resultPage->getConfig()->getTitle()->prepend(__('TITLE'));
 
         return $resultPage;
     }

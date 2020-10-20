@@ -10,8 +10,9 @@ class Store extends Container
     {
         $this->_controller = 'adminhtml_store';
         $this->_blockGroup = 'Mbvb1223_Store';
-        $this->_headerText = __('Posts');
-        $this->_addButtonLabel = __('Create New Post');
+        $this->_headerText = __('STORE HEADER');
+        $this->_addButtonLabel = __('Create New STORE');
+
         parent::_construct();
     }
 }
