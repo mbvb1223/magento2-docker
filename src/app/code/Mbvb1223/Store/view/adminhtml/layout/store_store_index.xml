@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="formkey"/>
+    <update handle="store_store_grid_block"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Mbvb1223\Store\Block\Adminhtml\Store" name="store_store_grid_block.grid.container" />
+        </referenceContainer>
+    </body>
+</page>
+
