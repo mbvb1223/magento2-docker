@@ -1,0 +1,7 @@
+Magento/Company/Model/ResourceModel/Company/Grid
+Magento/Company/Ui/Component/Listing/Column
+Magento/CompanyCredit/Model
+Magento/NegotiableQuote/Controller/Quote
+Magento/NegotiableQuote/Model
+Magento/RequisitionList/Controller/Item
+Magento/PurchaseOrderRule/Model/ResourceModel/PurchaseOrder/Grid
