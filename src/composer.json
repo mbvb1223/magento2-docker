@@ -11,6 +11,7 @@
     },
     "require": {
         "magento/composer-root-update-plugin": "~1.0",
+        "magento/extension-b2b": "^1.3",
         "magento/module-bundle-sample-data": "100.4.*",
         "magento/module-catalog-rule-sample-data": "100.4.*",
         "magento/module-catalog-sample-data": "100.4.*",
@@ -35,8 +36,9 @@
         "magento/module-theme-sample-data": "100.4.*",
         "magento/module-widget-sample-data": "100.4.*",
         "magento/module-wishlist-sample-data": "100.4.*",
-        "magento/product-enterprise-edition": "2.4.0",
-        "magento/sample-data-media": "100.4.*"
+        "magento/product-enterprise-edition": ">=2.4.1",
+        "magento/sample-data-media": "100.4.*",
+        "vpietri/adm-quickdevbar": "^0.1.17"
     },
     "require-dev": {
         "allure-framework/allure-phpunit": "~1.2.0",

@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Ordersnumber condition with customer segment
+ *
+ * @magentoDataFixture Magento/CustomerSegment/_files/segment_with_three_customers_and_two_past_orders.php
  */
 class OrdersnumberTest extends TestCase
 {
@@ -28,12 +30,47 @@ class OrdersnumberTest extends TestCase
     /**
      * Tests matched customers using orders number condition
      *
-     * @magentoDataFixture Magento/CustomerSegment/_files/segment_with_three_customers_and_two_past_orders.php
      * @dataProvider getSatisfiedIdsDataProvider
      * @param array $conditions
      * @param array $expectedCustomerIds
      */
     public function testGetSatisfiedIds(array $conditions, array $expectedCustomerIds)
+    {
+        $segment = $this->saveSegment($conditions);
+        $actualCustomerIds = $segment->getConditions()->getSatisfiedIds(self::WEBSITE);
+        sort($actualCustomerIds, SORT_NUMERIC);
+        $actualCustomerIds = array_values($actualCustomerIds);
+        sort($expectedCustomerIds, SORT_NUMERIC);
+        $actualCustomerIds = array_values($actualCustomerIds);
+        $this->assertEquals($expectedCustomerIds, $actualCustomerIds);
+    }
+
+    /**
+     * Tests matched customer using orders number condition
+     *
+     * @dataProvider getSatisfiedIdsDataProvider
+     * @param array $conditions
+     * @param array $expectedCustomerIds
+     */
+    public function testIsSatisfiedBy(array $conditions, array $expectedCustomerIds)
+    {
+        $segment = $this->saveSegment($conditions);
+        foreach ([self::CUSTOMER_1, self::CUSTOMER_2, self::CUSTOMER_3] as $customerId) {
+            $isCustomerNotExpectedToSatisfy = !in_array($customerId, $expectedCustomerIds);
+            $isCustomerActuallySatisfy = $segment->getConditions()->isSatisfiedBy($customerId, self::WEBSITE, []);
+            $this->assertTrue(
+                $isCustomerNotExpectedToSatisfy xor $isCustomerActuallySatisfy,
+                "Customer ID#$customerId Failed"
+            );
+        }
+    }
+
+    /**
+     * @param array $conditions
+     * @return Segment
+     * @throws \Exception
+     */
+    private function saveSegment(array $conditions): Segment
     {
         $objectManager = Bootstrap::getObjectManager();
         $segmentModel = $objectManager->create(Segment::class);
@@ -44,12 +81,7 @@ class OrdersnumberTest extends TestCase
         $segment->loadPost($data);
         $segment->save();
         $segment->matchCustomers();
-        $actualCustomerIds = $segment->getConditions()->getSatisfiedIds(self::WEBSITE);
-        sort($actualCustomerIds, SORT_NUMERIC);
-        $actualCustomerIds = array_values($actualCustomerIds);
-        sort($expectedCustomerIds, SORT_NUMERIC);
-        $actualCustomerIds = array_values($actualCustomerIds);
-        $this->assertEquals($expectedCustomerIds, $actualCustomerIds);
+        return $segment;
     }
 
     /**

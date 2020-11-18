@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Khien_Blog::blog" title="BLOG" module="Khien_Blog" sortOrder="51" resource="Khien_Blog::blog"/>
+        <add id="Khien_Blog::post" title="Post" module="Khien_Blog" sortOrder="10" action="blog/post" resource="Khien_Blog::post" parent="Khien_Blog::blog"/>
+    </menu>
+</config>

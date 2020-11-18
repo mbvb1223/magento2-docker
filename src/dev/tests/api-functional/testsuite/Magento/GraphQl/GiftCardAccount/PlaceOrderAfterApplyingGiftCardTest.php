@@ -86,7 +86,7 @@ class PlaceOrderAfterApplyingGiftCardTest extends GraphQlAbstract
         $this->addProductToCart($cartId, $quantity, $sku);
 
         $this->setBillingAddress($cartId);
-        $shippingMethod = $this->setShippingAddress($cartId);
+        $shippingMethod = $this->setShippingAddress($cartId, 'TX');
 
         $this->setShippingMethod($cartId, $shippingMethod);
         $this->applyGiftCardToCart($cartId, $giftCardCode);
@@ -97,6 +97,44 @@ class PlaceOrderAfterApplyingGiftCardTest extends GraphQlAbstract
         $result = $this->graphQlQuery($giftCardAccountQuery);
         // check the balance left on the card once the order is placed after gift card is applied
         $this->assertEquals(5, $result['giftCardAccount']['balance']['value']);
+    }
+
+    /**
+     *  Gift card pays for the total cart
+     *
+     * @magentoApiDataFixture Magento/GraphQl/Catalog/_files/simple_product.php
+     * @magentoApiDataFixture Magento/GiftCardAccount/_files/giftcardaccounts_for_search.php
+     * @magentoApiDataFixture Magento/GraphQl/Tax/_files/tax_rule_for_region_1.php
+     * @magentoApiDataFixture Magento/GraphQl/Tax/_files/tax_calculation_shipping_excludeTax_order_display_settings.php
+     */
+    public function testCheckOutWhenGiftCardCompleteleyPaysCartZeroTotal()
+    {
+        $quantity = 3;
+
+        $sku = 'simple_product';
+        $giftCardCode ='gift_card_account_6';
+        $cartId = $this->createEmptyCart();
+        $this->setGuestEmailOnCart($cartId);
+        $this->addProductToCart($cartId, $quantity, $sku);
+
+        $this->setBillingAddress($cartId);
+        $this->applyGiftCardToCart($cartId, $giftCardCode);
+        $shippingMethod = $this->setShippingAddress($cartId, 'TX');
+        $this->checkAvailablePaymentMethod($cartId, 'free', true);
+
+        $this->setShippingMethod($cartId, $shippingMethod);
+
+        $this->setShippingAddress($cartId, 'AL');
+        $this->checkAvailablePaymentMethod($cartId, 'free', false);
+
+        $this->setShippingAddress($cartId, 'TX');
+        $paymentMethodCode = 'free';
+        $this->setPaymentMethod($cartId, $paymentMethodCode);
+        $this->placeOrder($cartId);
+        $giftCardAccountQuery = $this->getGiftCardAccountQuery($giftCardCode);
+        $result = $this->graphQlQuery($giftCardAccountQuery);
+        // check the balance left on the card once the order is placed after gift card is applied
+        $this->assertEquals(0, $result['giftCardAccount']['balance']['value']);
     }
 
     /**
@@ -116,7 +154,7 @@ class PlaceOrderAfterApplyingGiftCardTest extends GraphQlAbstract
         $this->addProductToCart($cartId, $quantity, $sku);
 
         $this->setBillingAddress($cartId);
-        $shippingMethod = $this->setShippingAddress($cartId);
+        $shippingMethod = $this->setShippingAddress($cartId, 'TX');
 
         $this->setShippingMethod($cartId, $shippingMethod);
         $this->applyGiftCardToCart($cartId, $giftCardCode);
@@ -179,7 +217,7 @@ QUERY;
     private function addProductToCart(string $cartId, float $quantity, string $sku): void
     {
         $query = <<<QUERY
-mutation {  
+mutation {
   addSimpleProductsToCart(
     input: {
       cart_id: "{$cartId}"
@@ -248,9 +286,10 @@ QUERY;
 
     /**
      * @param string $cartId
+     * @param string $state
      * @return array
      */
-    private function setShippingAddress(string $cartId): array
+    private function setShippingAddress(string $cartId, string $state): array
     {
         $query = <<<QUERY
 mutation {
@@ -265,7 +304,7 @@ mutation {
             company: "test company"
             street: ["test street 1", "test street 2"]
             city: "test city"
-            region: "TX"
+            region: "{$state}"
             postcode: "887766"
             country_code: "US"
             telephone: "88776655"
@@ -315,6 +354,29 @@ QUERY;
 
     /**
      * @param string $cartId
+     * @param string $method
+     * @return void
+     */
+    private function checkAvailablePaymentMethod(string $cartId, string $method, bool $checkExists): void
+    {
+        $query = <<<QUERY
+query {
+  cart(cart_id:"{$cartId}") {
+    available_payment_methods {
+      code
+      title
+    }
+  }
+}
+QUERY;
+        $response = $this->graphQlMutation($query);
+        $paymentMethods = $response['cart']['available_payment_methods'] ?? [];
+        $freeFound = (bool)array_search($method, array_column($paymentMethods, 'code'));
+        self::assertEquals($checkExists, $freeFound);
+    }
+
+    /**
+     * @param string $cartId
      * @param array $method
      * @return array
      */
@@ -323,7 +385,7 @@ QUERY;
         $query = <<<QUERY
 mutation {
   setShippingMethodsOnCart(input:  {
-    cart_id: "{$cartId}", 
+    cart_id: "{$cartId}",
     shipping_methods: [
       {
          carrier_code: "{$method['carrier_code']}"
@@ -344,7 +406,7 @@ QUERY;
         self::assertArrayHasKey('setShippingMethodsOnCart', $response);
         self::assertArrayHasKey('cart', $response['setShippingMethodsOnCart']);
         self::assertArrayHasKey('available_payment_methods', $response['setShippingMethodsOnCart']['cart']);
-        self::assertCount(1, $response['setShippingMethodsOnCart']['cart']['available_payment_methods']);
+        self::assertGreaterThan(0, $response['setShippingMethodsOnCart']['cart']['available_payment_methods']);
 
         $availablePaymentMethod = current($response['setShippingMethodsOnCart']['cart']['available_payment_methods']);
         self::assertArrayHasKey('code', $availablePaymentMethod);

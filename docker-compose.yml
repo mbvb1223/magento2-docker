@@ -10,10 +10,12 @@ services:
       - ./src:/var/www/html
   phpfpm:
     build: './dockerfile/phpfpm'
+    container_name: m2ee_php
     volumes:
       - ./src:/var/www/html
   mysql:
     image: mysql:5.7
+    container_name: m2ee_mysql
     volumes:
       - ./mysql:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d:ro
@@ -22,6 +24,19 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: 123456
       MYSQL_ROOT_PASSWORD: 123456
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: m2ee_phpmyadmin
+    links:
+      - mysql
+    environment:
+      PMA_HOST: m2ee_mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 9654:80
 
   elasticsearch:
     image: elasticsearch:7.7.1

@@ -3,116 +3,124 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\Invitation\Block;
 
-class FormTest extends \PHPUnit\Framework\TestCase
+use Magento\Framework\App\Config\MutableScopeConfigInterface;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\View\LayoutInterface;
+use Magento\Invitation\Model\Config;
+use Magento\Store\Model\ScopeInterface;
+use Magento\TestFramework\Helper\Bootstrap;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Tests for invitation sending form.
+ */
+class FormTest extends TestCase
 {
     /**
-     * @var \Magento\Invitation\Block\Form
+     * @var ObjectManagerInterface
      */
-    protected $_block;
+    private $objectManager;
+
+    /**
+     * @var MutableScopeConfigInterface
+     */
+    private $mutableConfig;
+
+    /**
+     * @var Form
+     */
+    private $block;
 
     /**
      * Remembered old value of store config
+     *
      * @var array
      */
-    protected $_rememberedConfig;
+    private $rememberedConfig;
 
+    /**
+     * @inheritdoc
+     */
     protected function setUp(): void
     {
-        $this->_block = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Framework\View\LayoutInterface::class
-        )->createBlock(
-            \Magento\Invitation\Block\Form::class
-        );
+        $this->objectManager = Bootstrap::getObjectManager();
+        $this->mutableConfig = $this->objectManager->get(MutableScopeConfigInterface::class);
+        $this->block = $this->objectManager->get(LayoutInterface::class)->createBlock(Form::class);
     }
 
     /**
      * @param int $num
      * @param int $expected
-     *
      * @dataProvider getMaxInvitationsPerSendDataProvider
+     * @return void
      */
-    public function testGetMaxInvitationsPerSend($num, $expected)
+    public function testGetMaxInvitationsPerSend($num, $expected): void
     {
-        $this->_changeConfig(\Magento\Invitation\Model\Config::XML_PATH_MAX_INVITATION_AMOUNT_PER_SEND, $num);
         try {
-            $this->assertEquals($expected, $this->_block->getMaxInvitationsPerSend());
-        } catch (\Exception $e) {
-            $this->_restoreConfig();
-            throw $e;
+            $this->changeConfig(Config::XML_PATH_MAX_INVITATION_AMOUNT_PER_SEND, $num);
+            $this->assertEquals($expected, $this->block->getMaxInvitationsPerSend());
+        } finally {
+            $this->restoreConfig();
         }
-        $this->_restoreConfig();
     }
 
     /**
      * @return array
      */
-    public function getMaxInvitationsPerSendDataProvider()
+    public function getMaxInvitationsPerSendDataProvider(): array
     {
         return [[1, 1], [3, 3], [100, 100], [0, 1]];
     }
 
     /**
+     * @return void
+     */
+    public function testIsInvitationMessageAllowed(): void
+    {
+        try {
+            $this->changeConfig(Config::XML_PATH_USE_INVITATION_MESSAGE, 1);
+            $this->assertTrue($this->block->isInvitationMessageAllowed());
+
+            $this->changeConfig(Config::XML_PATH_USE_INVITATION_MESSAGE, 0);
+            $this->assertFalse($this->block->isInvitationMessageAllowed());
+        } finally {
+            $this->restoreConfig();
+        }
+    }
+
+    /**
      * Sets new value to store config path, remembers old value
      *
-     * @param  $path
-     * @param  $value
-     * @return \Magento\Invitation\Block\FormTest
+     * @param  string $path
+     * @param  int $value
+     * @return void
      */
-    protected function _changeConfig($path, $value)
+    private function changeConfig(string $path, int $value): void
     {
-        $oldValue = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Framework\App\Config\MutableScopeConfigInterface::class
-        )->getValue(
-            $path,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        $oldValue = $this->mutableConfig->getValue($path, ScopeInterface::SCOPE_STORE);
+        $this->mutableConfig->setValue($path, $value, ScopeInterface::SCOPE_STORE);
 
-        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Framework\App\Config\MutableScopeConfigInterface::class
-        )->setValue(
-            $path,
-            $value,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-
-        if (!$this->_rememberedConfig) {
-            $this->_rememberedConfig = ['path' => $path, 'old_value' => $oldValue];
+        if (!$this->rememberedConfig) {
+            $this->rememberedConfig = ['path' => $path, 'old_value' => $oldValue];
         }
-        return $this;
     }
 
     /**
      * Restores previously remembered store config value
      *
-     * @return \Magento\Invitation\Block\FormTest
+     * @return void
      */
-    protected function _restoreConfig()
+    private function restoreConfig(): void
     {
-        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Framework\App\Config\MutableScopeConfigInterface::class
-        )->setValue(
-            $this->_rememberedConfig['path'],
-            $this->_rememberedConfig['old_value'],
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        $this->mutableConfig->setValue(
+            $this->rememberedConfig['path'],
+            $this->rememberedConfig['old_value'],
+            ScopeInterface::SCOPE_STORE
         );
-        $this->_rememberedConfig = null;
-        return $this;
-    }
-
-    public function testIsInvitationMessageAllowed()
-    {
-        try {
-            $this->_changeConfig(\Magento\Invitation\Model\Config::XML_PATH_USE_INVITATION_MESSAGE, 1);
-            $this->assertTrue($this->_block->isInvitationMessageAllowed());
-
-            $this->_changeConfig(\Magento\Invitation\Model\Config::XML_PATH_USE_INVITATION_MESSAGE, 0);
-            $this->assertFalse($this->_block->isInvitationMessageAllowed());
-        } catch (\Exception $e) {
-            $this->_restoreConfig();
-            throw $e;
-        }
-        $this->_restoreConfig();
+        $this->rememberedConfig = null;
     }
 }

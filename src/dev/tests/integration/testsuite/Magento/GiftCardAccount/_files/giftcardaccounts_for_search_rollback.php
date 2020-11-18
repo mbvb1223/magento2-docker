@@ -31,10 +31,13 @@ $filter4 = $filterBuilder->setField('code')
 $filter5 = $filterBuilder->setField('code')
     ->setValue('gift_card_account_5')
     ->create();
+$filter6 = $filterBuilder->setField('code')
+    ->setValue('gift_card_account_6')
+    ->create();
 $accounts = $repo->getList(
     $criteriaBuilder->addFilters(
         [
-        $filter1, $filter2, $filter3, $filter4, $filter5
+        $filter1, $filter2, $filter3, $filter4, $filter5, $filter6
         ]
     )->create()
 )->getItems();

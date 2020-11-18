@@ -45,6 +45,13 @@ $accounts = [
         'is_redeemable' => Giftcardaccount::NOT_REDEEMABLE,
         'balance' => 50,
     ],
+    [
+        'code' => 'gift_card_account_6',
+        'status' => Giftcardaccount::STATUS_ENABLED,
+        'state' => Giftcardaccount::STATE_AVAILABLE,
+        'is_redeemable' => Giftcardaccount::NOT_REDEEMABLE,
+        'balance' => 45,
+    ],
 ];
 
 /** @var GiftCardAccountRepositoryInterface $giftCardAccountRepository */

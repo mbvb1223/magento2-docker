@@ -5,7 +5,13 @@
  */
 namespace Magento\WebsiteRestriction\Controller;
 
-class IndexTest extends \Magento\TestFramework\TestCase\AbstractController
+use Magento\Cms\Model\Page;
+use Magento\Framework\App\CacheInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\TestCase\AbstractController;
+
+class IndexTest extends AbstractController
 {
     /**
      * @magentoConfigFixture current_store general/restriction/is_active 1
@@ -16,12 +22,12 @@ class IndexTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testStubAction()
     {
-        $page = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Cms\Model\Page::class);
+        $page = Bootstrap::getObjectManager()->create(Page::class);
         $page->load('page100', 'identifier');
         // fixture
 
-        $websiteId = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Store\Model\StoreManagerInterface::class
+        $websiteId = Bootstrap::getObjectManager()->get(
+            StoreManagerInterface::class
         )->getWebsite(
             'base'
         )->getId();
@@ -30,8 +36,8 @@ class IndexTest extends \Magento\TestFramework\TestCase\AbstractController
          * besides more expensive, cleaning by tags currently triggers system setup = DDL = breaks transaction
          * therefore cleanup is performed by cache ID
          */
-        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Framework\App\CacheInterface::class
+        Bootstrap::getObjectManager()->get(
+            CacheInterface::class
         )->remove(
             "RESTRICTION_LANGING_PAGE_{$websiteId}"
         );
@@ -42,5 +48,19 @@ class IndexTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->assertContains('<h1>Cms Page Design Blank Title</h1>', $body);
         $this->assertContains('theme/frontend/default/blank/en_US/Magento_Theme/favicon.ico', $body);
         $this->assertHeaderPcre('Http/1.1', '/^503 Service Unavailable$/');
+    }
+
+    /**
+     * @magentoConfigFixture current_store general/restriction/is_active 1
+     * @magentoConfigFixture current_store general/restriction/mode 1
+     * @magentoConfigFixture current_store general/restriction/http_redirect 1
+     * @magentoConfigFixture current_store general/restriction/cms_page home
+     * @magentoConfigFixture current_store general/restriction/http_status 0
+     */
+    public function testStubActionHomePage()
+    {
+        $this->dispatch('/home');
+        $this->assertEquals(200, $this->getResponse()->getHttpResponseCode());
+        $this->assertStringContainsString('Home Page', $this->getResponse()->getBody());
     }
 }

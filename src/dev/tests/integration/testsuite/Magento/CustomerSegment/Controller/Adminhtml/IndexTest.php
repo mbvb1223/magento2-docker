@@ -66,7 +66,11 @@ class IndexTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
 
         $result = $loggingModel->load('magento_customersegment', 'event_code');
         $this->assertNotEmpty($result->getId());
-        $expected = json_encode(['general' => __('Matched %1 Customers of Segment %2', 1, $segment->getId())]);
+        $expected = json_encode(
+            [
+                'general' => __('Matching Customers of Segment %1 is added to messages queue.', $segment->getId())
+            ]
+        );
         $this->assertEquals($expected, $result->getInfo());
     }
 }

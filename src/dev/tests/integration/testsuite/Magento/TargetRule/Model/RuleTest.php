@@ -115,6 +115,7 @@ class RuleTest extends \PHPUnit\Framework\TestCase
         $targetRuleIndexModel = $objectManager->create(\Magento\TargetRule\Model\Index::class);
         $targetRuleModel = $objectManager->create(\Magento\TargetRule\Model\Rule::class);
         $actualProducts = [];
+        $idsToReindex = [];
         foreach ($products as $sku => $categories) {
             $categoryLinkManagement->assignProductToCategories($sku, $categories);
             /** @var \Magento\CatalogInventory\Model\Stock\Item $stockItem */
@@ -127,7 +128,13 @@ class RuleTest extends \PHPUnit\Framework\TestCase
             $stockItem->setIsQtyDecimal(0);
             $stockItem->setIsInStock(1);
             $stockItemRepository->save($stockItem);
+            $idsToReindex[] = $product->getId();
         }
+
+        /** @var \Magento\Indexer\Model\Indexer $indexer */
+        $indexer = $objectManager->create(\Magento\Indexer\Model\Indexer::class);
+        $indexer->load('catalog_product_price');
+        $indexer->reindexList($idsToReindex);
 
         $targetRuleModel->load('related', 'name');
         $data['actions'] = $conditions;

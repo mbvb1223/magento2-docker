@@ -6,6 +6,7 @@
 namespace Magento\CustomerSegment\Model\Segment\Condition\Product;
 
 use Magento\CustomerSegment\Model\Segment\Condition\Product\Attributes as ProductAttributesCondition;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\CustomerSegment\Model\ResourceModel\Segment as ResourceModel;
@@ -163,5 +164,64 @@ class AttributesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->productAttributesCondition->isSatisfiedBy(null, $websiteId, $matchingParams));
         $notMatchingParams['quote_item']['product_id'] = 111111;
         $this->assertFalse($this->productAttributesCondition->isSatisfiedBy(null, $websiteId, $notMatchingParams));
+    }
+
+    /**
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @param string $sku
+     * @param bool $include
+     * @param string $result
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @dataProvider getSubfilterSqlInStatementDataProvider
+     */
+    public function testGetSubfilterSqlInStatement(
+        string $sku,
+        bool $include,
+        string $result
+    ) {
+        $objectManager = Bootstrap::getObjectManager();
+        /** @var StoreManagerInterface $storeManager */
+        $storeManager = $objectManager->get(StoreManagerInterface::class);
+        $websiteId = $storeManager->getWebsite()->getId();
+        $this->productAttributesCondition
+            ->setAttribute('sku')
+            ->setOperator('==')
+            ->setValue($sku)
+            ->setUseSelect(false)
+            ->setCombineProductCondition(false);
+        $fieldName = 'item.product_id';
+        $this->assertEquals(
+            $result,
+            $this->productAttributesCondition->getSubfilterSql($fieldName, $include, $websiteId)
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubfilterSqlInStatementDataProvider(): array
+    {
+        return [
+            [
+                'sku' => 'simple',
+                'include' => true,
+                'result' => 'item.product_id IN (1)'
+            ],
+            [
+                'sku' => 'simple',
+                'include' => false,
+                'result' => 'item.product_id NOT IN (1)'
+            ],
+            [
+                'sku' => 'simple001',
+                'include' => true,
+                'result' => '1=0'
+            ],
+            [
+                'sku' => 'simple001',
+                'include' => false,
+                'result' => '1=1'
+            ]
+        ];
     }
 }

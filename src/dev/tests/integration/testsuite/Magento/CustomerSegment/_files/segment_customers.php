@@ -61,8 +61,4 @@ for ($i = 0; $i < 3; $i++) {
 
     $segment->loadPost($data);
     $segment->save();
-
-    if ($segment->getApplyTo() != \Magento\CustomerSegment\Model\Segment::APPLY_TO_VISITORS) {
-        $segment->matchCustomers();
-    }
 }

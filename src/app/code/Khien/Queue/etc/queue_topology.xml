@@ -1,0 +1,5 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
+    <exchange name="amq.topic" type="topic" connection="amqp">
+        <binding id="AtwixProductDelete" topic="amq.topic.test" destinationType="queue" destination="atwix_product_delete"/>
+    </exchange>
+</config>

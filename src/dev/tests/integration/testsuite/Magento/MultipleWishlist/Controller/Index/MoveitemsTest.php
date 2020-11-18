@@ -19,7 +19,7 @@ use Magento\Wishlist\Model\ResourceModel\Item\Collection;
 /**
  * Test for move wish list items.
  *
- * @magentoDbIsolation enabled
+ * @magentoDbIsolation disabled
  * @magentoAppArea frontend
  */
 class MoveitemsTest extends AbstractController

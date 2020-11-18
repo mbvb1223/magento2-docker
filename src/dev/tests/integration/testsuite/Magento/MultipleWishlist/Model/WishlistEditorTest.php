@@ -157,14 +157,17 @@ class WishlistEditorTest extends TestCase
 
     /**
      * @magentoConfigFixture current_store wishlist/general/multiple_wishlist_number 2
-     * @magentoDataFixture Magento/MultipleWishlist/_files/wishlists_with_two_items.php
+     * @magentoDataFixture Magento/Customer/_files/customer.php
      *
      * @return void
      */
     public function testLimitCustomerWishLists(): void
     {
-        $this->markTestSkipped('Test is blocked by issue MC-32137');
+        $customerId = 1;
         $this->expectExceptionObject(new LocalizedException(__('Only %1 wish list(s) can be created.', 2)));
-        $this->wishlistEditorFactory->create()->edit(1, 'New Wish List');
+
+        foreach (range(1, 5) as $number) {
+            $this->wishlistEditorFactory->create()->edit($customerId, sprintf('New Wish List %s', $number));
+        }
     }
 }

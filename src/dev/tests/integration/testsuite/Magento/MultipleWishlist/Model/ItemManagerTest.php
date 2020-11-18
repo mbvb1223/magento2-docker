@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for wish list item manager model.
  *
- * @magentoDbIsolation enabled
+ * @magentoDbIsolation disabled
  * @magentoAppIsolation disabled
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */

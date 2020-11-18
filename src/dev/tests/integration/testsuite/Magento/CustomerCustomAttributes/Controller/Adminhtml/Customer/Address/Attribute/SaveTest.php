@@ -115,6 +115,7 @@ class SaveTest extends AbstractBackendController
             ['shtml'],
             ['phpt'],
             ['pht'],
+            ['xml'],
         ];
     }
 

@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test for wish list item management block.
  *
- * @magentoDbIsolation enabled
+ * @magentoDbIsolation disabled
  * @magentoAppArea frontend
  */
 class ManagementTest extends TestCase
