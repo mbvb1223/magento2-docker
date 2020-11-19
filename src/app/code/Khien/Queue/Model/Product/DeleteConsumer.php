@@ -13,6 +13,6 @@ class DeleteConsumer
      */
     public function processMessage(\Magento\Catalog\Api\Data\ProductInterface $data)
     {
-        var_dump($data->getId());
+        var_dump(time());
     }
 }
