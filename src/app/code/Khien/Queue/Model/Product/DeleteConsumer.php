@@ -7,11 +7,12 @@ class DeleteConsumer
     public function __construct()
     {
     }
+
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function processMessage(\Magento\Catalog\Api\Data\ProductInterface $data)
     {
-        die('sdf');
+        var_dump($data->getId());
     }
 }

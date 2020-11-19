@@ -49,15 +49,14 @@ class Index extends \Magento\Backend\App\Action implements HttpGetActionInterfac
         \Magento\Framework\MessageQueue\PublisherInterface $publisher,
         ProductFactory $factory
     ) {
-        $publisher->publish(self::TOPIC_NAME, $factory->create());
+        $product = $factory->create();
+        $product->setId(123);
+        $product->setUrlKey('khien_nam');
 
-//        $publisher->publish(self::TOPIC_NAME, [
-//            'salesOrderId' => 234,
-//            'sdf' => 234,
-//            'sdfsdfd' => 234,
-//            'sdfsdfdsdfs' => 234,
-//            234,
-//        ]);
+        for ($i = 1; $i <= 100; $i++) {
+            $publisher->publish(self::TOPIC_NAME, $product);
+        }
+
         die('sdf');
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
