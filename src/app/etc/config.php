@@ -459,6 +459,7 @@ return [
         'Dotdigitalgroup_Chat' => 1,
         'Dotdigitalgroup_B2b' => 1,
         'Dotdigitalgroup_Enterprise' => 1,
+        'Foggyline_Plugged' => 1,
         'Khien_Blog' => 1,
         'Khien_Queue' => 1,
         'Klarna_Core' => 1,
