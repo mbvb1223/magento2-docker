@@ -3,6 +3,7 @@ version: '3.7'
 services:
   app:
     image: nginx:1.16.1
+    restart: always
     ports:
       - "8888:80"
     volumes:
@@ -10,12 +11,14 @@ services:
       - ./src:/var/www/html
   phpfpm:
     build: './dockerfile/phpfpm'
+    restart: always
     container_name: m2ee_php
     volumes:
       - ./src:/var/www/html
   mysql:
     image: mysql:5.7
     container_name: m2ee_mysql
+    restart: always
     volumes:
       - ./mysql:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d:ro
@@ -40,6 +43,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:7.7.1
+    restart: always
     ports:
       - "9300:9300"
       - "9200:9200"
