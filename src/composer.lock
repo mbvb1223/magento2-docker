@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "81bc0832446a9837c3cb165e9a3fecf7",
+    "content-hash": "b23a5964c9678a49395d6e2cff3c5e0a",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -30249,6 +30249,52 @@
                 }
             ],
             "time": "2020-09-28T06:39:44+00:00"
+        },
+        {
+            "name": "smile/module-debug-toolbar",
+            "version": "5.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Smile-SA/magento2-module-debug-toolbar.git",
+                "reference": "9c383c528fadadc754472d6b712c6da485898969"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Smile-SA/magento2-module-debug-toolbar/zipball/9c383c528fadadc754472d6b712c6da485898969",
+                "reference": "9c383c528fadadc754472d6b712c6da485898969",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": ">=103.0.0",
+                "php": ">=7.1.3"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Smile\\DebugToolbar\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "EPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Laurent Minguet",
+                    "email": "dirtech@smile.fr"
+                }
+            ],
+            "description": "Smile Debug Toolbar",
+            "homepage": "https://github.com/Smile-SA/magento2-module-debug-toolbar",
+            "keywords": [
+                "debug",
+                "magento2",
+                "toolbar"
+            ],
+            "time": "2020-08-18T09:37:57+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
