@@ -25,6 +25,13 @@ class Index extends Store
         \Psr\Log\LoggerInterface $logger
     )
     {
+        $a = $this->forAllProduct($productCollectionFactory);
+
+        foreach ($a as $item) {
+            var_dump($item);
+        }
+        die();
+
         $this->logger = $logger;
 
         parent::__construct($context, $coreRegistry, $resultPageFactory, $postsFactory);
@@ -69,37 +76,37 @@ class Index extends Store
 //            }
 //        } while ($break);
 
-        $pageSize = 25;
-        $break = false;
-        $page = 1;
-        $count = null;
-        $lPage = null;
-        while ($break !== true) {
-            $collection = $productCollectionFactory->create();
-            $collection
-                ->addAttributeToSelect('id')
-                ->setOrder('entity_id', 'ASC')
-                ->setPageSize($pageSize)
-                ->setCurPage($page)
-                ->load();
+//        $pageSize = 25;
+//        $break = false;
+//        $page = 1;
+//        $count = null;
+//        $lPage = null;
+//        while ($break !== true) {
+//            $collection = $productCollectionFactory->create();
+//            $collection
+//                ->addAttributeToSelect('id')
+//                ->setOrder('entity_id', 'ASC')
+//                ->setPageSize($pageSize)
+//                ->setCurPage($page)
+//                ->load();
+//
+//            if ($count === null) {
+//                $count = $collection->getSize();
+//                $lPage = $collection->getLastPageNumber();
+//            }
+//
+//            if ($lPage == $page) {
+//                $break = true;
+//            }
+//
+//            $page++;
+//
+//            foreach ($collection as $product) {
+////                echo $product->getId() . "<br>";
+//            }
+//        }
+//    }
 
-            if ($count === null) {
-                $count = $collection->getSize();
-                $lPage = $collection->getLastPageNumber();
-            }
-
-            if ($lPage == $page) {
-                $break = true;
-            }
-
-            $page++;
-
-            foreach ($collection as $product) {
-//                echo $product->getId() . "<br>";
-            }
-        }
-
-        /*----------------------------------*/
     }
 
     public function execute()
@@ -114,5 +121,30 @@ class Index extends Store
         $resultPage->getConfig()->getTitle()->prepend(__('TITLE'));
 
         return $resultPage;
+    }
+
+    public function forAllProduct($productCollectionFactory): \Generator
+    {
+        $collection = $productCollectionFactory->create();
+
+        $collection->addAttributeToSelect('id');
+        $collection->setPageSize(5);
+        $pageCount = $collection->getLastPageNumber();
+        $currentPage = 1;
+        while ($currentPage <= $pageCount) {
+            $collection->setCurPage($currentPage);
+            foreach ($collection as $key => $product) {
+                yield $key => $product->getId();
+            }
+            $collection->clear();
+            $currentPage++;
+        }
+    }
+
+    function gen_one_to_three() {
+        for ($i = 1; $i <= 3; $i++) {
+            // Note that $i is preserved between yields.
+            yield $i;
+        }
     }
 }
