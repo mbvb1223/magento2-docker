@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+ini_set('memory_limit', '2048M');
 
 /**
  * Environment initialization
